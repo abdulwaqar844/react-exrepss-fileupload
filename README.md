@@ -64,7 +64,6 @@ app.post("/upload", (req, res) => {
 });
 // Create an express server which will listen requests at port 5000
 app.listen(5000, () => console.log("Server Started..."));
-
 ```
 
 6. Now Updated script in packege.json file to run our server.js file.
@@ -78,4 +77,83 @@ app.listen(5000, () => console.log("Server Started..."));
 
 7. Create React appliction by running `create-reat-app client` in root folder.
 
-    After creation of  React application start our appliction with ```npm run dev``` command. Now we can test our Endpoint using postman.
+   After creation of React application start our appliction with `npm run dev` command. Now we can test our Endpoint using postman.
+
+[Image](https://image.com)
+
+When we test application we will get response filename and path name .
+
+## Part: 2
+
+In this section we will upload our code of client application which we created using create-react-app 1. Create A from where we will submit our file.
+
+```javascript
+// Import axios to post Request
+import axios form 'axios'
+// Create State for variables
+ const [file, setFile] = useState("");
+  const [filename, setFilename] = useState("Choose File");
+  const [uploadedFile, setUploadedFile] = useState({});
+  const [message, setMessage] = useState("");
+ // Create OnSubmit function
+ const onSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const res = await axios.post("/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      const { fileName, filePath } = res.data;
+      setUploadedFile({ fileName, filePath });
+      setMessage("File Uploaded");
+    } catch (err) {
+      if (err.response.status === 500) {
+        setMessage("There was a problem with the server");
+      } else {
+        setMessage(err.response.data.msg);
+      }
+
+    }
+  };
+  // Create OnChange Event for Input Box
+ const onChange = (e) => {
+    setFile(e.target.files[0]);
+    setFilename(e.target.files[0].name);
+  };
+//Form Code
+<form onSubmit={onSubmit}>
+  <div className="custom-file mb-4">
+    <input
+      type="file"
+      className="custom-file-input"
+      id="customFile"
+      onChange={onChange}
+      required
+    />
+    <label className="custom-file-label" htmlFor="customFile">
+      {filename}
+    </label>
+  </div>
+
+  <input
+    type="submit"
+    value="Upload"
+    className="btn btn-primary btn-block mt-4"
+  />
+</form>
+// Display message using Conditional Statement
+  {message ? <p> msg={message} </p> : null}
+  //Display Uploaded File on Web pages
+  {uploadedFile ? (
+        <div className="row mt-5">
+          <div className="col-md-6 m-auto">
+            <h3 className="text-center">{uploadedFile.fileName}</h3>
+            <img style={{ width: "100%" }} src={uploadedFile.filePath} alt="" />
+          </div>
+        </div>
+      ) : null}
+
+```
