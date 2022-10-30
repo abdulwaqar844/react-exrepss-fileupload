@@ -50,7 +50,7 @@ app.post("/upload", (req, res) => {
     return res.status(400).json({ msg: "No file uploaded" });
   }
   const file = req.files.file;
-  // We need unique file name to save it in folder and then use filename to access it. I have replace space with - and concatinated file name with Date String. We can also used uuid package as well.
+  // Unique name is required for every uploaded file so we are renaming it with date string we can also use unique ID generators like UUID etc.
   const UFileName = `${new Date().getTime()}-${file.name.replaceAll(" ", "-")}`;
   // This line of code will save our file in public/uploads folder in our
   //appliction and will retrun err if any error found if no error found then return pathname of file.
@@ -97,10 +97,13 @@ import axios form 'axios'
   const [message, setMessage] = useState("");
  // Create OnSubmit function
  const onSubmit = async (e) => {
+ // Preventing default behaviour of form submission
     e.preventDefault();
+    // Create an object from FromData
     const formData = new FormData();
     formData.append("file", file);
     try {
+    // We will pass form data to our endpoint and specify in header object. 
       const res = await axios.post("/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
